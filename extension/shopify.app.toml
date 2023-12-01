@@ -1,0 +1,24 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "multi-purpose-app"
+client_id = "c6f27d4f9e8173eeee8f737b6c699904"
+application_url = "https://shopifybuddy-app--development.gadget.app/api/shopify/install-or-render"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+use_legacy_install_flow = true
+
+[auth]
+redirect_urls = [
+  "https://shopifybuddy-app--development.gadget.app/api/connections/auth/shopify/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+dev_store_url = "utkarsh-developer-preview.myshopify.com"

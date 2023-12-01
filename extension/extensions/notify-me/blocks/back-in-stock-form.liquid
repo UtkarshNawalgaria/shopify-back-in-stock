@@ -1,0 +1,116 @@
+{% if product.available == false %}
+  <script src="https://shopifybuddy-app--development.gadget.app/api/client/web.min.js"></script>
+  <script defer>
+    // create a new instance of the Gadget client at the `api` global connected to the Development environment
+    window.api = new Gadget({
+      environment: 'Development',
+      authenticationMode: {
+        anonymous: true
+      }
+    });
+  </script>
+  <script src="{{ 'back-in-stock.js' | asset_url }}" defer></script>
+
+  <back-in-stock
+    style="display: block;"
+    data-disply-type="inline"
+    data-show-phone="{{ block.settings.show_phone }}"
+  >
+    <form id="back-in-stock-form">
+      {% if customer %}
+        <input type="hidden" name="email" value="{{ customer.email }}">
+        <input type="hidden" name="phone" value="{{ customer.phone }}">
+        <input type="hidden" name="name" value="{{ customer.name }}">
+      {% else %}
+        <div style="display: flex; flex-direction: column;">
+          <label for="name">Name</label>
+          <input type="text" name="name">
+        </div>
+        {% if block.settings.show_phone %}
+          <div style="display: flex; flex-direction: column;">
+            <label for="phone">Phone</label>
+            <input type="text" name="phone">
+          </div>
+        {% endif %}
+        <div style="display: flex; flex-direction: column;">
+          <label for="email">Email</label>
+          <input
+            required
+            type="email"
+            name="email"
+            id="email"
+          >
+        </div>
+      {% endif %}
+      <input type="hidden" name="productId" value="{{ product.id }}">
+      <input type="submit" value="Notify Me">
+    </form>
+  </back-in-stock>
+{% endif %}
+
+<style>
+  #back-in-stock-form input[type="submit"] {
+    border: none;
+    background-color: {{ block.settings.button_color | default: "black" }};
+    color: {{ block.settings.button_text_color | default: "white" }};
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Back In Stock",
+  "target": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "display_type",
+      "label": "Select Display Type",
+      "options": [
+        {
+          "label": "Inline",
+          "value": "inline"
+        },
+        {
+          "label": "Popup",
+          "value": "popup"
+        }
+      ],
+      "default": "inline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Show Phone Number",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Color"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success Message",
+      "default": "We will get back to you when the product is available"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "product"
+    ]
+  }
+}
+{% endschema %}
