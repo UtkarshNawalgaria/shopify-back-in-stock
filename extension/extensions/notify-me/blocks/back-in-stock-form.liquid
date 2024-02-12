@@ -12,27 +12,29 @@
   <script src="{{ 'back-in-stock.js' | asset_url }}" defer></script>
 
   <back-in-stock
-    style="display: block;"
     data-disply-type="inline"
     data-show-phone="{{ block.settings.show_phone }}"
   >
     <form id="back-in-stock-form">
+      {% if block.settings.header != blank %}
+        <h4>{{ block.settings.header }}</h4>
+      {% endif %}
       {% if customer %}
         <input type="hidden" name="email" value="{{ customer.email }}">
         <input type="hidden" name="phone" value="{{ customer.phone }}">
         <input type="hidden" name="name" value="{{ customer.name }}">
       {% else %}
-        <div style="display: flex; flex-direction: column;">
+        <div class="input-block">
           <label for="name">Name</label>
           <input type="text" name="name">
         </div>
         {% if block.settings.show_phone %}
-          <div style="display: flex; flex-direction: column;">
+          <div class="input-block">
             <label for="phone">Phone</label>
             <input type="text" name="phone">
           </div>
         {% endif %}
-        <div style="display: flex; flex-direction: column;">
+        <div class="input-block">
           <label for="email">Email</label>
           <input
             required
@@ -43,19 +45,102 @@
         </div>
       {% endif %}
       <input type="hidden" name="productId" value="{{ product.id }}">
-      <input type="submit" value="Notify Me">
+      <button class="button-submit" {% if block.settings.button_full_width %}data-full-width{% endif %}>
+        Notify Me
+        <span class="loader"></span>
+      </button>
+      <span class="error-message"></span>
     </form>
+    <span class="success-message">{{ block.settings.success_message }}</span>
   </back-in-stock>
 {% endif %}
 
 <style>
-  #back-in-stock-form input[type="submit"] {
+  back-in-stock {
+    display: block;
+  }
+
+  back-in-stock h4 {
+    text-align: {{ block.settings.header_align }};
+    font-size: {{ block.settings.header_font_size }}px;
+    font-weight: {{ block.settings.header_font_weight }};
+  }
+
+  back-in-stock .success-message {
+    display: none;
+    text-align: center;
+    color: green;
+  }
+
+  back-in-stock[data-success] .success-message {
+    display: inline-block;
+  }
+
+  #back-in-stock-form .button-submit[data-full-width] {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #back-in-stock-form .button-submit {
     border: none;
     background-color: {{ block.settings.button_color | default: "black" }};
     color: {{ block.settings.button_text_color | default: "white" }};
-    padding: 6px 12px;
-    border-radius: 5px;
+    padding: 11px 22px;
     cursor: pointer;
+    border-radius: {{ block.settings.button_border_radius }}px;
+  }
+
+  #back-in-stock-form .button-submit:disabled {
+    background-color: rgba(0, 0, 0, 0.6);
+    cursor: not-allowed;
+  }
+
+  #back-in-stock-form .input-block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  #back-in-stock-form input[type="text"],
+  #back-in-stock-form input[type="text"]:focus-visible,
+  #back-in-stock-form input[type="email"],
+  #back-in-stock-form input[type="email"]:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  #back-in-stock-form input[type="text"],
+  #back-in-stock-form input[type="email"] {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: {{ block.settings.input_border_radius }}px;
+  }
+
+  #back-in-stock-form .error-message {
+    display: inline-block;
+    color: red;
+  }
+
+  .loader {
+    display: none;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
 
@@ -87,8 +172,87 @@
       "default": false
     },
     {
+      "type": "range",
+      "id": "input_border_radius",
+      "label": "Input Border Radius",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
+    {
+      "type": "text",
+      "label": "Header",
+      "id": "header",
+      "default": "Email me when back in Stock"
+    },
+    {
+      "type": "range",
+      "id": "header_font_size",
+      "label": "Header Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "header_font_weight",
+      "label": "Font Weight",
+      "options": [
+        {
+          "label": "Thin",
+          "value": "normal"
+        },
+        {
+          "label": "Bold",
+          "value": "600"
+        },
+        {
+          "label": "Bolder",
+          "value": "800"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Header Color"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "Header Alignment",
+      "options": [
+        {
+          "label": "Left",
+          "value": "left"
+        },
+        {
+          "label": "Center",
+          "value": "center"
+        },
+        {
+          "label": "Right",
+          "value": "right"
+        }
+      ],
+      "default": "left"
+    },
+    {
       "type": "header",
       "content": "Button Settings"
+    },
+    {
+      "type": "checkbox",
+      "label": "Full Width",
+      "id": "button_full_width",
+      "default": false
     },
     {
       "type": "color",
@@ -99,6 +263,15 @@
       "type": "color",
       "id": "button_text_color",
       "label": "Button Text Color"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Border Radius",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 1
     },
     {
       "type": "text",
