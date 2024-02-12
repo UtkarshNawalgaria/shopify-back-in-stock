@@ -5,92 +5,99 @@ import {
   IndexTable,
   useIndexResourceState,
   Text,
-  Badge,
+  Link,
 } from "@shopify/polaris";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { api } from "./api";
+
+const resourceName = {
+  singular: "request",
+  plural: "requests",
+};
 
 function RequestListPage() {
-  const requests = [
-    {
-      id: 1,
-      name: "Utkarsh",
-      email: "utkarsh.n@olivecloud.in",
-      product: "Black Toy",
-      date: "23/10/23",
-      status: "Sent",
-    },
-    {
-      id: 2,
-      name: "Rahol Saha",
-      email: "rahol.saha@olivecloud.in",
-      product: "Black Toy",
-      date: "23/10/23",
-      status: "Not Sent",
-    },
-  ];
-  const resourceName = {
-    singular: "request",
-    plural: "requests",
-  };
-
+  const [requests, setRequests] = useState([]);
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState(requests);
+
+  async function fetchNotifyMeRequests() {
+    const requestRecords = await api.notifyMeRequest.findMany({
+      select: {
+        id: true,
+        createdAt: true,
+        user: {
+          id: true,
+          name: true,
+          email: true,
+        },
+        product: {
+          id: true,
+          title: true,
+          createdAt: true,
+        },
+      },
+    });
+
+    setRequests(requestRecords);
+  }
+
+  useEffect(() => {
+    fetchNotifyMeRequests();
+  }, []);
+
+  if (!requests.length) return <div>Loading...</div>;
 
   return (
     <Page title="Back In Stock Requests" fullWidth>
       <Layout>
         <Layout.Section>
           <Card>
-            <IndexTable
-              resourceName={resourceName}
-              itemCount={requests.length}
-              selectedItemsCount={
-                allResourcesSelected ? "All" : selectedResources.length
-              }
-              onSelectionChange={handleSelectionChange}
-              headings={[
-                { title: "Customer name" },
-                { title: "Email" },
-                { title: "Product" },
-                { title: "Date" },
-                { title: "Status" },
-              ]}
-            >
-              {requests.map((row, index) => (
-                <IndexTable.Row
-                  id={row.id}
-                  key={row.id}
-                  selected={selectedResources.includes(row.id)}
-                  position={index}
-                >
-                  <IndexTable.Cell>
-                    <Text variant="bodyMd" fontWeight="bold" as="span">
-                      {row.name}
-                    </Text>
-                  </IndexTable.Cell>
-                  <IndexTable.Cell>
-                    <Text variant="bodyMd" as="span">
-                      {row.email}
-                    </Text>
-                  </IndexTable.Cell>
-                  <IndexTable.Cell>
-                    <Text variant="bodyMd" as="span">
-                      {row.product}
-                    </Text>
-                  </IndexTable.Cell>
-                  <IndexTable.Cell>
-                    <Text variant="bodyMd" as="span">
-                      {row.date}
-                    </Text>
-                  </IndexTable.Cell>
-                  <IndexTable.Cell>
-                    <Badge tone={row.status === "Sent" ? "success" : "info"}>
-                      {row.status}
-                    </Badge>
-                  </IndexTable.Cell>
-                </IndexTable.Row>
-              ))}
-            </IndexTable>
+            {requests.length > 0 ? (
+              <IndexTable
+                resourceName={resourceName}
+                itemCount={requests.length}
+                selectedItemsCount={
+                  allResourcesSelected ? "All" : selectedResources.length
+                }
+                onSelectionChange={handleSelectionChange}
+                headings={[
+                  { title: "Customer name" },
+                  { title: "Email" },
+                  { title: "Product" },
+                  { title: "Request Date" },
+                ]}
+              >
+                {requests.map((request, index) => (
+                  <IndexTable.Row
+                    id={request.id}
+                    key={request.id}
+                    selected={selectedResources.includes(request.id)}
+                    position={index}
+                  >
+                    <IndexTable.Cell>
+                      <Text variant="bodyMd" fontWeight="bold" as="span">
+                        {request.user.name}
+                      </Text>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Text variant="bodyMd" as="span">
+                        {request.user.email}
+                      </Text>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Text variant="bodyMd" as="span">
+                        <Link>{request.product.title}</Link>
+                      </Text>
+                    </IndexTable.Cell>
+                    <IndexTable.Cell>
+                      <Text variant="bodyMd" as="span">
+                        {new Date(request.createdAt).toDateString()}
+                      </Text>
+                    </IndexTable.Cell>
+                  </IndexTable.Row>
+                ))}
+              </IndexTable>
+            ) : null}
           </Card>
         </Layout.Section>
       </Layout>

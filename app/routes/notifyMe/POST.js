@@ -39,7 +39,7 @@ export default async function route({
   }
 
   // Check if user has already requested to notify them for the same product
-  const existingRequest = await api.backInStockRequest.maybeFindFirst({
+  const existingRequest = await api.notifyMeRequest.maybeFindFirst({
     filter: [
       { productId: { equals: product.id } },
       { userId: { equals: user.id } },
@@ -48,7 +48,7 @@ export default async function route({
 
   if (!existingRequest) {
     // Create a new record
-    const newRequest = await api.backInStockRequest.create({
+    const newRequest = await api.notifyMeRequest.create({
       product: {
         _link: product.id,
       },
@@ -58,7 +58,7 @@ export default async function route({
     });
   }
 
-  reply
+  return reply
     .send({
       message: error ? "Product does not exist" : "Route called successfully",
     })
