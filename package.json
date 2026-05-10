@@ -1,0 +1,59 @@
+{
+  "name": "shopify-profitability-tracker",
+  "version": "1.0.0",
+  "description": "Shopify embedded app that computes per-order profitability by combining Shopify, Meta Ads (CAPI + UTM), and ShipRocket data — all stored as Shopify metafields.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "remix vite:build",
+    "dev": "shopify app dev",
+    "config:link": "shopify app config link",
+    "config:use": "shopify app config use",
+    "deploy": "shopify app deploy",
+    "generate": "shopify app generate",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "shopify": "shopify",
+    "start": "remix-serve ./build/server/index.js",
+    "typecheck": "tsc --noEmit",
+    "prisma": "prisma",
+    "setup": "prisma generate && prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "@remix-run/dev": "^2.13.1",
+    "@remix-run/node": "^2.13.1",
+    "@remix-run/react": "^2.13.1",
+    "@remix-run/serve": "^2.13.1",
+    "@shopify/app-bridge-react": "^4.1.6",
+    "@shopify/polaris": "^13.9.0",
+    "@shopify/shopify-app-remix": "^3.4.0",
+    "@shopify/shopify-app-session-storage-prisma": "^5.1.5",
+    "isbot": "^5.1.17",
+    "papaparse": "^5.4.1",
+    "prisma": "^5.20.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite-tsconfig-paths": "^5.0.1"
+  },
+  "devDependencies": {
+    "@remix-run/eslint-config": "^2.13.1",
+    "@remix-run/route-config": "^2.13.1",
+    "@shopify/api-codegen-preset": "^1.1.4",
+    "@types/eslint": "^9.6.1",
+    "@types/node": "^22.7.5",
+    "@types/papaparse": "^5.3.15",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
+    "eslint": "^8.57.1",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.9"
+  },
+  "engines": {
+    "node": ">=20.10"
+  }
+}
