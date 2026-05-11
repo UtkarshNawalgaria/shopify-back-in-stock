@@ -1,29 +1,20 @@
-# Environment Configuration
+node_modules
+.cache
+build
 .env
-.env.*
-
-# Dependency directory
-node_modules/
-
-# Test coverage directory
-coverage
-
-# Ignore Apple macOS Desktop Services Store
+.env.local
+.shopify
 .DS_Store
 
-# Logs
-logs
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+prisma/migrations/dev.db
+
+# Generated
+.gadget
 *.log
 
-# extensions build output
-extensions/*/build
-
-# lock files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
+# IDE
 .vscode
-
-# Gadget
-.gadget
+.idea
