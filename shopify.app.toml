@@ -8,7 +8,7 @@ automatically_update_urls_on_dev = true
 include_config_on_deploy = true
 
 [access_scopes]
-scopes = "read_orders,write_orders,read_products,write_products,read_customers,read_metafields,write_metafields"
+scopes = "read_orders,write_orders,read_products,write_products,read_customers"
 
 [auth]
 redirect_urls = [
